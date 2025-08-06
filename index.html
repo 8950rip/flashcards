@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards</n  ></title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    #card { width: 300px; height: 200px; border: 2px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; background: #f9f9f9; margin-bottom: 20px; }
+    #card p { margin: 0; }
+    button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; background: #007bff; color: white; cursor: pointer; }
+    button:disabled { background: #ccc; cursor: default; }
+  </style>
+</head>
+<body>
+  <div id="card"><p>Загрузка карточек...</p></div>
+  <div>
+    <button id="show-answer" disabled>Показать ответ</button>
+    <button id="next-card" disabled>Следующая</button>
+  </div>
+
+  <script>
+    let cards = [];
+    let current = null;
+    
+    // Загружаем Markdown-файл с карточками
+    fetch('flashcards.md')
+      .then(resp => resp.text())
+      .then(text => {
+        const lines = text.split(/\r?\n/);
+        let q = null, a = '';
+        lines.forEach(line => {
+          const qm = line.match(/^\d+\.\s\*\*(.+?)\*\*/);
+          if (qm) {
+            if (q) cards.push({question: q, answer: a.trim()});
+            q = qm[1];
+            a = '';
+          } else if (q) {
+            if (line.trim()) a += line.replace(/^\s+|\s+$/g, '') + '\n';
+          }
+        });
+        if (q) cards.push({question: q, answer: a.trim()});
+        init();
+      })
+      .catch(err => {
+        document.getElementById('card').innerHTML = '<p>Ошибка загрузки карточек</p>';
+        console.error(err);
+      });
+    
+    function init() {
+      document.getElementById('show-answer').disabled = false;
+      document.getElementById('next-card').disabled = false;
+      nextCard();
+    }
+
+    function nextCard() {
+      current = cards[Math.floor(Math.random() * cards.length)];
+      const card = document.getElementById('card');
+      card.innerHTML = `<p>${current.question}</p>`;
+      document.getElementById('show-answer').textContent = 'Показать ответ';
+    }
+
+    document.getElementById('show-answer').addEventListener('click', () => {
+      const btn = document.getElementById('show-answer');
+      const card = document.getElementById('card');
+      if (btn.textContent === 'Показать ответ') {
+        card.innerHTML = `<p>${current.answer.replace(/\n/g, '<br>')}</p>`;
+        btn.textContent = 'Скрыть ответ';
+      } else {
+        card.innerHTML = `<p>${current.question}</p>`;
+        btn.textContent = 'Показать ответ';
+      }
+    });
+
+    document.getElementById('next-card').addEventListener('click', () => {
+      nextCard();
+    });
+  </script>
+</body>
+</html>
