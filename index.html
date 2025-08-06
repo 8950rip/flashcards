@@ -2,203 +2,275 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards Quiz</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>FlashCards – Учись с удовольствием</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       background: #f0f4f2;
       color: #14532d;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
+      min-height:100vh;
+      display:flex; flex-direction:column;
     }
-    h1 {
-      margin-bottom: 0.5em;
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex; flex-direction: column; flex:1;
     }
-    #controls {
-      margin-bottom: 1em;
+    header {
+      background: linear-gradient(90deg,#047857,#34d399);
+      color:#fff;
+      padding: 1rem;
+      text-align: center;
     }
-    #card-container {
-      perspective: 1000px;
-      width: 360px;
-      height: 240px;
-      margin-bottom: 1em;
+    header .logo { font-size:2rem; margin-bottom:0.2rem; }
+    header h1 { font-size:1.5rem; }
+
+    .app-container { display:flex; flex:1; }
+    .sidebar {
+      width: 240px;
+      background: #ecfdf5;
+      border-right:1px solid #d1fae5;
+      display:flex;flex-direction:column;
+      padding:1rem;
     }
-    .card {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.6s;
-      cursor: pointer;
+    .sidebar h3 {
+      color:#047857; margin-bottom:0.5rem;
     }
-    .flipped { transform: rotateY(180deg); }
-    .side {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border: 2px solid #14532d;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
-      box-sizing: border-box;
-      background: white;
+    .category-list { list-style:none; margin-bottom:1rem; }
+    .category-item {
+      padding:0.6rem 1rem;
+      border-radius:6px;
+      cursor:pointer;
+      display:flex;justify-content:space-between;
+      transition: background 0.2s;
     }
-    .back {
-      transform: rotateY(180deg);
-      background: #d1fae5;
+    .category-item.active,
+    .category-item:hover {
+      background:#d1fae5;
     }
-    button {
-      background: #10b981;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      margin: 5px;
-      border-radius: 6px;
-      font-size: 1em;
-      cursor: pointer;
+    .btn {
+      margin-top:auto;
+      padding:0.75rem;
+      background:#34d399;
+      color:#fff;
+      border:none; border-radius:6px;
+      font-weight:600;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:0.5rem;
+      transition:transform .2s;
     }
-    button:disabled {
-      background: #6b7280;
-      cursor: default;
+    .btn:hover { transform:translateY(-2px); }
+
+    .main-content { flex:1; padding:1rem; display:flex; flex-direction:column; }
+
+    .mode-selector {
+      display:flex; gap:0.5rem; margin-bottom:1rem;
     }
-    #scoreboard {
-      margin-top: 1em;
-      font-weight: bold;
+    .mode-btn {
+      flex:1; padding:0.6rem; border:none; border-radius:6px;
+      background:#d1fae5; color:#047857; font-weight:600; cursor:pointer;
+      transition:background .2s;
+    }
+    .mode-btn.active { background:#047857; color:#fff; }
+
+    .card-container {
+      flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      perspective:1000px; margin-bottom:1rem;
+    }
+    .flashcard {
+      width:100%; max-width:500px; height:300px;
+      position:relative; transform-style:preserve-3d;
+      transition:transform .6s; cursor:pointer;
+    }
+    .flashcard.flipped { transform:rotateY(180deg); }
+    .card-front, .card-back {
+      position:absolute; width:100%; height:100%;
+      backface-visibility:hidden;
+      border-radius:12px; padding:1rem;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      box-shadow:0 8px 24px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+    .card-front { background:#ddfdf3; color:#047857; }
+    .card-back {
+      background:#047857; color:#fff;
+      transform:rotateY(180deg);
+    }
+    .card-title { font-size:1.2rem; margin-bottom:0.5rem; font-weight:600; }
+    .card-content { font-size:1.5rem; font-weight:500; }
+
+    .navigation {
+      display:flex; align-items:center; justify-content:space-between;
+      width:100%; max-width:500px;
+    }
+    .nav-btn {
+      background:#34d399; border:none; border-radius:50%;
+      width:48px; height:48px; color:#fff; font-size:1.2rem;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:transform .2s;
+    }
+    .nav-btn:hover { transform:scale(1.1); }
+
+    .card-counter { font-weight:600; color:#047857; }
+
+    #scoreboard { text-align:center; font-size:1rem; color:#14532d; margin-top:0.5rem; }
+
+    @media(max-width:800px) {
+      .app-container { flex-direction:column; }
+      .sidebar { width:100%; border-right:none; border-bottom:1px solid #d1fae5; }
     }
   </style>
 </head>
 <body>
-  <h1>Карточки для запоминания</h1>
-  <div id="controls">
-    <button id="start-quiz">Начать квиз</button>
-    <button id="reset" disabled>Сбросить</button>
-  </div>
-  <div id="card-container">
-    <div id="card" class="card">
-      <div class="side front"><p>Нажмите "Начать квиз"</p></div>
-      <div class="side back"><p></p></div>
+  <div class="container">
+    <header>
+      <div class="logo"><i class="fas fa-layer-group"></i></div>
+      <h1>FlashCards – Учись с удовольствием</h1>
+    </header>
+    <div class="app-container">
+      <aside class="sidebar">
+        <h3>Мои наборы</h3>
+        <ul class="category-list">
+          <li class="category-item active"><span>Основные понятия</span><span>99</span></li>
+        </ul>
+        <button class="btn" id="start-quiz">
+          <i class="fas fa-play"></i> Начать квиз
+        </button>
+      </aside>
+      <main class="main-content">
+        <div class="mode-selector">
+          <button class="mode-btn active" data-mode="learn">Обучение</button>
+          <button class="mode-btn" data-mode="quiz">Тест</button>
+        </div>
+        <div class="card-container">
+          <div class="flashcard" id="card">
+            <div class="card-front">
+              <div class="card-title">Нажмите «Начать квиз»</div>
+            </div>
+            <div class="card-back">
+              <div class="card-title"></div>
+            </div>
+          </div>
+        </div>
+        <div class="navigation">
+          <button class="nav-btn" id="prev" disabled><i class="fas fa-arrow-left"></i></button>
+          <div class="card-counter">– / –</div>
+          <button class="nav-btn" id="next" disabled><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div id="scoreboard"></div>
+      </main>
     </div>
   </div>
-  <div id="buttons">
-    <button id="show-answer" disabled>Показать ответ</button>
-    <button id="correct" disabled>Правильно</button>
-    <button id="next-card" disabled>Следующая</button>
-  </div>
-  <div id="scoreboard"></div>
 
   <script>
-    let cards = [], quizList = [], currentIndex = 0, score = 0, total = 0;
+    let cards = [], mode='learn', index=0, score=0, total=0, quizList=[];
     const cardEl = document.getElementById('card');
-    const frontEl = cardEl.querySelector('.front p');
-    const backEl = cardEl.querySelector('.back p');
-    const showBtn = document.getElementById('show-answer');
-    const nextBtn = document.getElementById('next-card');
-    const correctBtn = document.getElementById('correct');
-    const startBtn = document.getElementById('start-quiz');
-    const resetBtn = document.getElementById('reset');
+    const front = cardEl.querySelector('.card-front');
+    const back = cardEl.querySelector('.card-back');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const counter = document.querySelector('.card-counter');
     const scoreboard = document.getElementById('scoreboard');
+    const startQuiz = document.getElementById('start-quiz');
+    const modeBtns = document.querySelectorAll('.mode-btn');
 
+    // Загрузка карточек из Markdown
     fetch('flashcards.md')
-      .then(r => r.text())
-      .then(parseMD)
-      .catch(err => frontEl.textContent = 'Ошибка загрузки карточек');
-
-    function parseMD(text) {
-      const lines = text.split(/\r?\n/);
-      let q = null, a = '';
-      lines.forEach(line => {
-        const m = line.match(/^\d+\.\s\*\*(.+?)\*\*/);
-        if (m) {
-          if (q) cards.push({q,a});
-          q = m[1]; a = '';
-        } else if (q && line.trim()) {
-          a += line.trim() + '\n';
-        }
+      .then(r=>r.text())
+      .then(text=>{
+        const lines = text.split(/\\r?\\n/);
+        let q=null,a='';
+        lines.forEach(l=>{
+          const m=l.match(/^\\d+\\.\\s\\*\\*(.+?)\\*\\*/);
+          if(m){
+            if(q) cards.push({q,a:a.trim()});
+            q=m[1]; a='';
+          } else if(q && l.trim()) {
+            a+=l.trim()+'\\n';
+          }
+        });
+        if(q) cards.push({q,a:a.trim()});
+        total=cards.length;
+        updateCard();
       });
-      if (q) cards.push({q,a: a.trim()});
-    }
 
-    function startQuiz() {
-      const n = parseInt(prompt('Сколько вопросов берем?', Math.min(10, cards.length))); 
-      if (isNaN(n) || n < 1) return;
-      total = Math.min(n, cards.length);
-      score = 0;
-      quizList = shuffle([...cards]).slice(0, total);
-      currentIndex = 0;
-      updateControls(true);
-      showCard();
-      updateScore();
-    }
+    // Переключение режимов
+    modeBtns.forEach(b=>{
+      b.onclick=()=>{
+        modeBtns.forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        mode = b.dataset.mode;
+        reset();
+      }
+    });
 
-    function showCard() {
-      const {q,a} = quizList[currentIndex];
-      frontEl.textContent = q;
-      backEl.innerHTML = a.replace(/\n/g,'<br>');
+    // Запуск квиза
+    startQuiz.onclick = ()=>{
+      mode='quiz';
+      modeBtns.forEach(x=>{
+        if(x.dataset.mode==='quiz') x.classList.add('active');
+        else x.classList.remove('active');
+      });
+      let n = parseInt(prompt('Сколько вопросов?',10));
+      if(isNaN(n)||n<1) return;
+      total = Math.min(n,cards.length);
+      quizList = shuffle(cards).slice(0,total);
+      score=0; index=0;
+      updateCard();
+    };
+
+    // Отобразить карточку
+    function updateCard(){
+      const data = mode==='quiz'? quizList[index] : cards[index];
+      front.innerHTML=`<div class="card-title">${data.q}</div>`;
+      back.innerHTML=`<div class="card-title">${data.a.replace(/\\n/g,'<br>')}</div>`;
       cardEl.classList.remove('flipped');
-      showBtn.disabled = false;
-      nextBtn.disabled = true;
-      correctBtn.disabled = true;
+      prevBtn.disabled = index===0;
+      nextBtn.disabled = (mode==='learn' ? index===cards.length-1 : index===total-1);
+      counter.textContent = `${index+1} / ${mode==='learn'?cards.length:total}`;
+      scoreboard.textContent = mode==='quiz'?`Правильно: ${score}/${total}`:'';
     }
 
-    function flipCard() {
-      cardEl.classList.toggle('flipped');
-      showBtn.textContent = cardEl.classList.contains('flipped') ? 'Скрыть ответ' : 'Показать ответ';
-      if (cardEl.classList.contains('flipped')) {
-        correctBtn.disabled = false;
-        nextBtn.disabled = false;
+    // Управление навигацией и ответами
+    cardEl.onclick = ()=> cardEl.classList.toggle('flipped');
+    prevBtn.onclick = ()=>{ if(index>0){ index--; updateCard(); } };
+    nextBtn.onclick = ()=>{
+      if(mode==='quiz' && !cardEl.classList.contains('flipped')){
+        alert('Сначала переверните карточку и нажмите ОК, чтобы засчитать ответ.');
+        cardEl.classList.add('flipped');
       } else {
-        correctBtn.disabled = true;
-        nextBtn.disabled = true;
+        if(mode==='quiz'){
+          score++;
+        }
+        if(index< (mode==='learn'?cards.length-1:total-1)) index++;
+        else if(mode==='quiz'){
+          alert(`Квиз окончен. Результат: ${score}/${total}`);
+          reset();
+          return;
+        }
+        updateCard();
       }
+    };
+
+    function reset(){
+      index=0; score=0; total=cards.length; quizList=[];
+      updateCard();
     }
 
-    function nextCard() {
-      currentIndex++;
-      if (currentIndex >= total) {
-        alert(`Квиз окончен! Ваш счёт: ${score}/${total}`);
-        updateControls(false);
-        return;
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
       }
-      showCard();
+      return a;
     }
-
-    function markCorrect() {
-      score++;
-      updateScore();
-      correctBtn.disabled = true;
-    }
-
-    function updateScore() {
-      scoreboard.textContent = `Вопрос ${currentIndex+1}/${total}, Правильно: ${score}`;
-    }
-
-    function updateControls(inQuiz) {
-      startBtn.disabled = inQuiz;
-      resetBtn.disabled = !inQuiz;
-      showBtn.disabled = !inQuiz;
-      nextBtn.disabled = !inQuiz;
-      correctBtn.disabled = !inQuiz;
-      if (!inQuiz) scoreboard.textContent = '';
-    }
-
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1)); [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    startBtn.addEventListener('click', startQuiz);
-    resetBtn.addEventListener('click', () => location.reload());
-    showBtn.addEventListener('click', flipCard);
-    nextBtn.addEventListener('click', nextCard);
-    correctBtn.addEventListener('click', markCorrect);
   </script>
 </body>
 </html>
