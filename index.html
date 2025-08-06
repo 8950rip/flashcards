@@ -3,78 +3,202 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcards</n  ></title>
+  <title>Flashcards Quiz</title>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    #card { width: 300px; height: 200px; border: 2px solid #333; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 15px; background: #f9f9f9; margin-bottom: 20px; }
-    #card p { margin: 0; }
-    button { padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; background: #007bff; color: white; cursor: pointer; }
-    button:disabled { background: #ccc; cursor: default; }
+    body {
+      background: #f0f4f2;
+      color: #14532d;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 0.5em;
+    }
+    #controls {
+      margin-bottom: 1em;
+    }
+    #card-container {
+      perspective: 1000px;
+      width: 360px;
+      height: 240px;
+      margin-bottom: 1em;
+    }
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+      cursor: pointer;
+    }
+    .flipped { transform: rotateY(180deg); }
+    .side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border: 2px solid #14532d;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      box-sizing: border-box;
+      background: white;
+    }
+    .back {
+      transform: rotateY(180deg);
+      background: #d1fae5;
+    }
+    button {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin: 5px;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #6b7280;
+      cursor: default;
+    }
+    #scoreboard {
+      margin-top: 1em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <div id="card"><p>Загрузка карточек...</p></div>
-  <div>
+  <h1>Карточки для запоминания</h1>
+  <div id="controls">
+    <button id="start-quiz">Начать квиз</button>
+    <button id="reset" disabled>Сбросить</button>
+  </div>
+  <div id="card-container">
+    <div id="card" class="card">
+      <div class="side front"><p>Нажмите "Начать квиз"</p></div>
+      <div class="side back"><p></p></div>
+    </div>
+  </div>
+  <div id="buttons">
     <button id="show-answer" disabled>Показать ответ</button>
+    <button id="correct" disabled>Правильно</button>
     <button id="next-card" disabled>Следующая</button>
   </div>
+  <div id="scoreboard"></div>
 
   <script>
-    let cards = [];
-    let current = null;
-    
-    // Загружаем Markdown-файл с карточками
+    let cards = [], quizList = [], currentIndex = 0, score = 0, total = 0;
+    const cardEl = document.getElementById('card');
+    const frontEl = cardEl.querySelector('.front p');
+    const backEl = cardEl.querySelector('.back p');
+    const showBtn = document.getElementById('show-answer');
+    const nextBtn = document.getElementById('next-card');
+    const correctBtn = document.getElementById('correct');
+    const startBtn = document.getElementById('start-quiz');
+    const resetBtn = document.getElementById('reset');
+    const scoreboard = document.getElementById('scoreboard');
+
     fetch('flashcards.md')
-      .then(resp => resp.text())
-      .then(text => {
-        const lines = text.split(/\r?\n/);
-        let q = null, a = '';
-        lines.forEach(line => {
-          const qm = line.match(/^\d+\.\s\*\*(.+?)\*\*/);
-          if (qm) {
-            if (q) cards.push({question: q, answer: a.trim()});
-            q = qm[1];
-            a = '';
-          } else if (q) {
-            if (line.trim()) a += line.replace(/^\s+|\s+$/g, '') + '\n';
-          }
-        });
-        if (q) cards.push({question: q, answer: a.trim()});
-        init();
-      })
-      .catch(err => {
-        document.getElementById('card').innerHTML = '<p>Ошибка загрузки карточек</p>';
-        console.error(err);
+      .then(r => r.text())
+      .then(parseMD)
+      .catch(err => frontEl.textContent = 'Ошибка загрузки карточек');
+
+    function parseMD(text) {
+      const lines = text.split(/\r?\n/);
+      let q = null, a = '';
+      lines.forEach(line => {
+        const m = line.match(/^\d+\.\s\*\*(.+?)\*\*/);
+        if (m) {
+          if (q) cards.push({q,a});
+          q = m[1]; a = '';
+        } else if (q && line.trim()) {
+          a += line.trim() + '\n';
+        }
       });
-    
-    function init() {
-      document.getElementById('show-answer').disabled = false;
-      document.getElementById('next-card').disabled = false;
-      nextCard();
+      if (q) cards.push({q,a: a.trim()});
+    }
+
+    function startQuiz() {
+      const n = parseInt(prompt('Сколько вопросов берем?', Math.min(10, cards.length))); 
+      if (isNaN(n) || n < 1) return;
+      total = Math.min(n, cards.length);
+      score = 0;
+      quizList = shuffle([...cards]).slice(0, total);
+      currentIndex = 0;
+      updateControls(true);
+      showCard();
+      updateScore();
+    }
+
+    function showCard() {
+      const {q,a} = quizList[currentIndex];
+      frontEl.textContent = q;
+      backEl.innerHTML = a.replace(/\n/g,'<br>');
+      cardEl.classList.remove('flipped');
+      showBtn.disabled = false;
+      nextBtn.disabled = true;
+      correctBtn.disabled = true;
+    }
+
+    function flipCard() {
+      cardEl.classList.toggle('flipped');
+      showBtn.textContent = cardEl.classList.contains('flipped') ? 'Скрыть ответ' : 'Показать ответ';
+      if (cardEl.classList.contains('flipped')) {
+        correctBtn.disabled = false;
+        nextBtn.disabled = false;
+      } else {
+        correctBtn.disabled = true;
+        nextBtn.disabled = true;
+      }
     }
 
     function nextCard() {
-      current = cards[Math.floor(Math.random() * cards.length)];
-      const card = document.getElementById('card');
-      card.innerHTML = `<p>${current.question}</p>`;
-      document.getElementById('show-answer').textContent = 'Показать ответ';
+      currentIndex++;
+      if (currentIndex >= total) {
+        alert(`Квиз окончен! Ваш счёт: ${score}/${total}`);
+        updateControls(false);
+        return;
+      }
+      showCard();
     }
 
-    document.getElementById('show-answer').addEventListener('click', () => {
-      const btn = document.getElementById('show-answer');
-      const card = document.getElementById('card');
-      if (btn.textContent === 'Показать ответ') {
-        card.innerHTML = `<p>${current.answer.replace(/\n/g, '<br>')}</p>`;
-        btn.textContent = 'Скрыть ответ';
-      } else {
-        card.innerHTML = `<p>${current.question}</p>`;
-        btn.textContent = 'Показать ответ';
-      }
-    });
+    function markCorrect() {
+      score++;
+      updateScore();
+      correctBtn.disabled = true;
+    }
 
-    document.getElementById('next-card').addEventListener('click', () => {
-      nextCard();
-    });
+    function updateScore() {
+      scoreboard.textContent = `Вопрос ${currentIndex+1}/${total}, Правильно: ${score}`;
+    }
+
+    function updateControls(inQuiz) {
+      startBtn.disabled = inQuiz;
+      resetBtn.disabled = !inQuiz;
+      showBtn.disabled = !inQuiz;
+      nextBtn.disabled = !inQuiz;
+      correctBtn.disabled = !inQuiz;
+      if (!inQuiz) scoreboard.textContent = '';
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1)); [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    startBtn.addEventListener('click', startQuiz);
+    resetBtn.addEventListener('click', () => location.reload());
+    showBtn.addEventListener('click', flipCard);
+    nextBtn.addEventListener('click', nextCard);
+    correctBtn.addEventListener('click', markCorrect);
   </script>
 </body>
 </html>
