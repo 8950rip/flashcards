@@ -1,276 +1,1238 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>FlashCards – Учись с удовольствием</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: #f0f4f2;
-      color: #14532d;
-      min-height:100vh;
-      display:flex; flex-direction:column;
-    }
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      overflow: hidden;
-      display: flex; flex-direction: column; flex:1;
-    }
-    header {
-      background: linear-gradient(90deg,#047857,#34d399);
-      color:#fff;
-      padding: 1rem;
-      text-align: center;
-    }
-    header .logo { font-size:2rem; margin-bottom:0.2rem; }
-    header h1 { font-size:1.5rem; }
-
-    .app-container { display:flex; flex:1; }
-    .sidebar {
-      width: 240px;
-      background: #ecfdf5;
-      border-right:1px solid #d1fae5;
-      display:flex;flex-direction:column;
-      padding:1rem;
-    }
-    .sidebar h3 {
-      color:#047857; margin-bottom:0.5rem;
-    }
-    .category-list { list-style:none; margin-bottom:1rem; }
-    .category-item {
-      padding:0.6rem 1rem;
-      border-radius:6px;
-      cursor:pointer;
-      display:flex;justify-content:space-between;
-      transition: background 0.2s;
-    }
-    .category-item.active,
-    .category-item:hover {
-      background:#d1fae5;
-    }
-    .btn {
-      margin-top:auto;
-      padding:0.75rem;
-      background:#34d399;
-      color:#fff;
-      border:none; border-radius:6px;
-      font-weight:600;
-      cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:0.5rem;
-      transition:transform .2s;
-    }
-    .btn:hover { transform:translateY(-2px); }
-
-    .main-content { flex:1; padding:1rem; display:flex; flex-direction:column; }
-
-    .mode-selector {
-      display:flex; gap:0.5rem; margin-bottom:1rem;
-    }
-    .mode-btn {
-      flex:1; padding:0.6rem; border:none; border-radius:6px;
-      background:#d1fae5; color:#047857; font-weight:600; cursor:pointer;
-      transition:background .2s;
-    }
-    .mode-btn.active { background:#047857; color:#fff; }
-
-    .card-container {
-      flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      perspective:1000px; margin-bottom:1rem;
-    }
-    .flashcard {
-      width:100%; max-width:500px; height:300px;
-      position:relative; transform-style:preserve-3d;
-      transition:transform .6s; cursor:pointer;
-    }
-    .flashcard.flipped { transform:rotateY(180deg); }
-    .card-front, .card-back {
-      position:absolute; width:100%; height:100%;
-      backface-visibility:hidden;
-      border-radius:12px; padding:1rem;
-      display:flex; flex-direction:column; justify-content:center; align-items:center;
-      box-shadow:0 8px 24px rgba(0,0,0,0.1);
-      text-align:center;
-    }
-    .card-front { background:#ddfdf3; color:#047857; }
-    .card-back {
-      background:#047857; color:#fff;
-      transform:rotateY(180deg);
-    }
-    .card-title { font-size:1.2rem; margin-bottom:0.5rem; font-weight:600; }
-    .card-content { font-size:1.5rem; font-weight:500; }
-
-    .navigation {
-      display:flex; align-items:center; justify-content:space-between;
-      width:100%; max-width:500px;
-    }
-    .nav-btn {
-      background:#34d399; border:none; border-radius:50%;
-      width:48px; height:48px; color:#fff; font-size:1.2rem;
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; transition:transform .2s;
-    }
-    .nav-btn:hover { transform:scale(1.1); }
-
-    .card-counter { font-weight:600; color:#047857; }
-
-    #scoreboard { text-align:center; font-size:1rem; color:#14532d; margin-top:0.5rem; }
-
-    @media(max-width:800px) {
-      .app-container { flex-direction:column; }
-      .sidebar { width:100%; border-right:none; border-bottom:1px solid #d1fae5; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концентраторы ЦК - Карточки для обучения</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a3a5f 0%, #2c5f8a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2c5f8a 0%, #1a3a5f 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .app-container {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f0f4f8;
+            border-right: 1px solid #d1e0e0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .categories h3 {
+            margin-bottom: 15px;
+            color: #2c5f8a;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #2c5f8a;
+            padding-bottom: 8px;
+        }
+        
+        .category-list {
+            list-style: none;
+            margin-bottom: 20px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .category-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .category-list::-webkit-scrollbar-thumb {
+            background: #2c5f8a;
+            border-radius: 3px;
+        }
+        
+        .category-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            background: #e6f0f7;
+            border-left: 4px solid #2c5f8a;
+        }
+        
+        .category-item:hover {
+            background: #d4e4f1;
+            transform: translateX(5px);
+        }
+        
+        .category-item.active {
+            background: #2c5f8a;
+            color: white;
+            border-left: 4px solid #4facfe;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #2c5f8a 0%, #1a3a5f 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn i {
+            font-size: 1.2rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #f0f4f8;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #e0e7ff;
+            color: #2c5f8a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .mode-btn.active {
+            background: #2c5f8a;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+        
+        .flashcard {
+            width: 100%;
+            max-width: 600px;
+            height: 350px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+            color: white;
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-content {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            width: 100%;
+            white-space: pre-line;
+            text-align: left;
+            padding: 0 20px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        
+        .card-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .card-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+        }
+        
+        .hint {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            position: absolute;
+            bottom: 20px;
+            font-style: italic;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 25px;
+        }
+        
+        .nav-btn {
+            background: #2c5f8a;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-btn:hover {
+            background: #1a3a5f;
+            transform: scale(1.1);
+        }
+        
+        .nav-btn:disabled {
+            background: #a0b9d0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .card-counter {
+            align-self: center;
+            font-size: 1.2rem;
+            color: #2c5f8a;
+            font-weight: 600;
+            background: #f0f4f8;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+        
+        .card-form {
+            background: #f0f4f8;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-title {
+            font-size: 1.3rem;
+            color: #2c5f8a;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c5f8a;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #2c5f8a;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 95, 138, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .form-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .save-btn {
+            background: #2c5f8a;
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: #1a3a5f;
+        }
+        
+        .cancel-btn {
+            background: #f8f9fa;
+            border: 2px solid #d1e0e0;
+            color: #555;
+        }
+        
+        .cancel-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #b0c4de;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c5f8a;
+        }
+        
+        .test-result {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            color: #2c5f8a;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 600px;
+            height: 8px;
+            background: #e0e7ff;
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2c5f8a 0%, #4facfe 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #d1e0e0;
+            }
+            
+            .card-content {
+                font-size: 1.1rem;
+            }
+            
+            .flashcard {
+                height: 320px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .flashcard {
+                height: 280px;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+            
+            .card-content {
+                font-size: 1rem;
+                padding: 0 15px;
+            }
+            
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo"><i class="fas fa-layer-group"></i></div>
-      <h1>FlashCards – Учись с удовольствием</h1>
-    </header>
-    <div class="app-container">
-      <aside class="sidebar">
-        <h3>Мои наборы</h3>
-        <ul class="category-list">
-          <li class="category-item active"><span>Основные понятия</span><span>99</span></li>
-        </ul>
-        <button class="btn" id="start-quiz">
-          <i class="fas fa-play"></i> Начать квиз
-        </button>
-      </aside>
-      <main class="main-content">
-        <div class="mode-selector">
-          <button class="mode-btn active" data-mode="learn">Обучение</button>
-          <button class="mode-btn" data-mode="quiz">Тест</button>
-        </div>
-        <div class="card-container">
-          <div class="flashcard" id="card">
-            <div class="card-front">
-              <div class="card-title">Нажмите «Начать квиз»</div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-industry"></i>
             </div>
-            <div class="card-back">
-              <div class="card-title"></div>
+            <h1>Концентраторы ЦК - Карточки для обучения</h1>
+            <div class="subtitle">Технические вопросы по эксплуатации и обслуживанию</div>
+        </header>
+        
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="categories">
+                    <h3>Категории вопросов</h3>
+                    <ul class="category-list" id="categoryList">
+                        <!-- Категории будут добавлены через JS -->
+                    </ul>
+                </div>
+                
+                <button class="btn" id="addCardBtn">
+                    <i class="fas fa-plus-circle"></i> Добавить карточку
+                </button>
             </div>
-          </div>
+            
+            <div class="main-content">
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="study">Режим обучения</button>
+                    <button class="mode-btn" data-mode="test">Тестовый режим</button>
+                </div>
+                
+                <div class="card-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="card-front">
+                            <div class="card-title">Вопрос</div>
+                            <div class="card-content" id="questionContent">Загрузка вопросов...</div>
+                            <div class="hint">Нажмите, чтобы перевернуть карточку</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-title">Ответ</div>
+                            <div class="card-content" id="answerContent"></div>
+                            <div class="hint">Нажмите, чтобы перевернуть карточку</div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    
+                    <div class="navigation">
+                        <button class="nav-btn" id="prevBtn" disabled>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="card-counter" id="cardCounter">Карточка 1 из 99</div>
+                        <button class="nav-btn" id="nextBtn">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card-form" id="cardForm" style="display: none;">
+                    <h3 class="form-title">Добавить новую карточку</h3>
+                    <div class="form-group">
+                        <label for="cardQuestion">Вопрос:</label>
+                        <textarea id="cardQuestion" placeholder="Введите вопрос"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardAnswer">Ответ:</label>
+                        <textarea id="cardAnswer" placeholder="Введите ответ"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardCategory">Категория:</label>
+                        <input type="text" id="cardCategory" placeholder="Введите категорию">
+                    </div>
+                    <div class="form-buttons">
+                        <button class="save-btn" id="saveCardBtn">Сохранить карточку</button>
+                        <button class="cancel-btn" id="cancelFormBtn">Отмена</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="navigation">
-          <button class="nav-btn" id="prev" disabled><i class="fas fa-arrow-left"></i></button>
-          <div class="card-counter">– / –</div>
-          <button class="nav-btn" id="next" disabled><i class="fas fa-arrow-right"></i></button>
-        </div>
-        <div id="scoreboard"></div>
-      </main>
     </div>
-  </div>
 
-  <script>
-    let cards = [], mode='learn', index=0, score=0, total=0, quizList=[];
-    const cardEl = document.getElementById('card');
-    const front = cardEl.querySelector('.card-front');
-    const back = cardEl.querySelector('.card-back');
-    const prevBtn = document.getElementById('prev');
-    const nextBtn = document.getElementById('next');
-    const counter = document.querySelector('.card-counter');
-    const scoreboard = document.getElementById('scoreboard');
-    const startQuiz = document.getElementById('start-quiz');
-    const modeBtns = document.querySelectorAll('.mode-btn');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Данные карточек из файла
+            const cards = [
+                {
+                    question: "Как правильно поднять крышку желоба хвостов концентратора ЦК-75?",
+                    answer: "Присоединить стропы / крюки к двум встроенным подъёмным проушинам на концах кронштейна трубы питания.",
+                    category: "Эксплуатация"
+                },
+                {
+                    question: "Сколько взвешенных частиц и какого размера допускается во флюидизационной воде?",
+                    answer: "≤ 20 ppm твёрдого; максимальный размер частиц ≤ 5 μm.",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Сколько длится цикл обогащения для коренных руд и для россыпей?",
+                    answer: "Коренные руды: 10 мин – 4 ч.  Россыпи: 4 – 12 ч.",
+                    category: "Процессы"
+                },
+                {
+                    question: "Каково правильное направление вращения ротора концентратора?",
+                    answer: "По часовой стрелке, если смотреть сверху.",
+                    category: "Эксплуатация"
+                },
+                {
+                    question: "Перечисли факторы, влияющие на расход флюидизационной воды.",
+                    answer: "* Гранулометрический состав питания\n* Общая плотность пустой породы\n* Процент твёрдого в питании",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Какое давление воздуха подаётся на тройник регулятора-фильтра?",
+                    answer: "Около 600 kPa (90 psig).",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Насколько возрастает давление воды на манометре в ходе цикла по мере накопления тяжёлого продукта?",
+                    answer: "На 1–3 psi (7–21 kPa) — это нормально.",
+                    category: "Мониторинг"
+                },
+                {
+                    question: "Для чего установлен самоочищающийся фильтр 50 mesh?",
+                    answer: "Чтобы предотвратить загрязнение воды, поступающей в концентрационное кольцо.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Какой перепад давления считается нормальным при самоочистке фильтра? Что означает отклонение?",
+                    answer: "Норма: 28–56 kPa (4–8 psi).\n• < 28 kPa — низкая скорость потока, фильтр чистится плохо.\n• > 56 kPa — слишком высокая скорость, повышенный износ фильтра.",
+                    category: "Мониторинг"
+                },
+                {
+                    question: "Какие уставки задать для сигнализации и отключения по высокому давлению?",
+                    answer: "Сигнал «Высокое давление» — 100 kPa (15 psi); отключение концентратора — 130 kPa (20 psi).",
+                    category: "Настройки"
+                },
+                {
+                    question: "Конус G5: главные особенности и область применения.",
+                    answer: "Низкий выход концентрата и расход воды; флюидизируется каждое второе кольцо. Оптимален, когда критичны водный баланс или масса концентрата.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Конус G6: главные особенности и область применения.",
+                    answer: "Полностью флюидизируемый; высокий выход концентрата, средний расход воды. Стандарт для первичного измельчения при более тонком золоте или наличии сульфидной породы.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Конус G7: главные особенности и область применения.",
+                    answer: "Полная флюдизация; высокий выход концентрата при низком расходе воды. Специально для очень тонкого питания.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Конус G7: при каких условиях и в каких циклах он считается промышленным стандартом?",
+                    answer: "При высокой гравитационной силе и малых требованиях к подаче воды; показал > 50 % извлечения золота < 25 µm. Сейчас стандарт для флотационных применений на фабриках по всему миру.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что означает аббревиатура GRG?",
+                    answer: "Gold Recoverable by Gravity — золото, извлекаемое гравитацией.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Что такое аллювиальное месторождение?",
+                    answer: "Минеральное отложение, сформированное проточной водой в смеси с илом, песком, гравием и т. д.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Для чего служит бесконтактный датчик на шкиве ротора?",
+                    answer: "Индукционный сенсор отслеживает проход спицы шкива, передаёт сигнал в ПЛК ICS и превращает его в показания об/мин.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Какова функция вибрационного изолятора?",
+                    answer: "Резиновая опора между верхней и нижней рамами, снижающая колебания верхней рамы.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что называется «водяной рубашкой» концентратора?",
+                    answer: "Пространство между чашей ротора и концентрационным конусом, куда поступает флюидизационная вода через многопортовый узел.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Для чего предназначен самоочищающийся водяной фильтр?",
+                    answer: "Удаляет крупные частицы и мусор из флюидизационной воды.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Чем помогает вращающая пластина над сеткой фильтра?",
+                    answer: "Закручивает поток воды через отверстия, создавая самоочищающее действие фильтра.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что такое встроенная система управления (ICS)?",
+                    answer: "Автоматическая система, управляющая и контролирующая основные функции концентратора.",
+                    category: "Системы"
+                },
+                {
+                    question: "Назначение датчика дифференциального давления в автоматической обвязке воды?",
+                    answer: "Следит за падением давления на фильтре, сигнализируя о его состоянии.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что такое желоб концентрата?",
+                    answer: "Фиксированный кольцевой желоб, через который концентрат выводится в статическую разгрузочную трубу.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Роль защитного кольца из нитрилового каучука на валу ротора?",
+                    answer: "Предотвращает загрязнение основного таконитового уплотнения корпуса подшипника.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что представляет собой изнашиваемый конус?",
+                    answer: "Сменный стальной конус с резиновой футеровкой в нижней части концентрационного конуса; в центре крепится распределитель питания.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Где формируется концентрационная постель?",
+                    answer: "В каждой проточке износостойкого полиуретана («концентрационном кольце») внутри конуса.",
+                    category: "Процессы"
+                },
+                {
+                    question: "Опиши конструкцию концентрационного конуса в целом.",
+                    answer: "Нижняя секция: изнашиваемый конус + распределитель питания + полусферический экспеллер. Верхняя секция: ряд концентрационных колец, где образуется постель.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что такое «крышка желоба хвостов в сборе»?",
+                    answer: "Узел, включающий крышку желоба хвостов, крепление и саму трубу питания со спиральной насадкой.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Почему металлический скрап опасен для процесса?",
+                    answer: "Длинные тонкие фрагменты образуют сетку в постели, мешают флюидизации и снижают извлечение.",
+                    category: "Процессы"
+                },
+                {
+                    question: "Функция многопортового узла на валу ротора?",
+                    answer: "Подаёт флюидизационную воду из вала в водяную рубашку и выводит концентрат из конуса в желоб через разгрузочные отверстия.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что такое направляющая пластина?",
+                    answer: "То же, что и «вращающая пластина» — диск над сеткой фильтра, закручивающий поток флюидизационной воды для самоочистки.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Назначение насадки для вывода илов?",
+                    answer: "Сменная пластиковая вставка в верхнем фланце чаши ротора с отверстием для удаления илов из водяной рубашки.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Какова функция нижней рамы концентратора?",
+                    answer: "Неподвижная опорная часть, несущая на себе верхнюю раму.",
+                    category: "Конструкция"
+                },
+                {
+                    question: "Что даёт опция «variable gravity» (VG)?",
+                    answer: "Позволяет оператору изменять скорость ротора, обеспечивая гибкую оптимизацию работы концентратора.",
+                    category: "Функции"
+                },
+                {
+                    question: "Для чего служат отверстия вывода илов?",
+                    answer: "Малые отверстия в насадках, через которые илы выходят из водяной рубашки ротора.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Отражательная подушка — это…?",
+                    answer: "Синоним «распределителя питания» (wear-pad, распределяющего поток вдоль стенок конуса).",
+                    category: "Терминология"
+                },
+                {
+                    question: "Что собирается в отстойнике фильтра?",
+                    answer: "Крупные частицы и мусор, отфильтрованные из флюидизационной воды.",
+                    category: "Процессы"
+                },
+                {
+                    question: "Как работает пробка фильтра во вращающей пластине?",
+                    answer: "Вставляя/удаляя пробки, изменяют самоочистку фильтра и расход флюидизационной воды.",
+                    category: "Эксплуатация"
+                },
+                {
+                    question: "Определение рабочего давления флюидизационной воды?",
+                    answer: "Давление, измеряемое сразу после регулирующего клапана.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Задача распределителя питания?",
+                    answer: "Изнашиваемая деталь в центре конуса, равномерно распределяющая поступающую пульпу по стенкам.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Что входит в «ротор в сборе»?",
+                    answer: "Узел вращения, вал ротора, подшипники, привод, многопортовый узел, чаша ротора и концентрационный конус.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Роль спиральной насадки в трубе питания?",
+                    answer: "Создаёт завихрение пульпы, придавая ей угловое ускорение к стенкам конуса.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Для чего нужен удалённый смазочный ниппель?",
+                    answer: "Через него пополняют слой смазки в таконитовых уплотнениях и подшипниках ротора.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Что делает узел вращения?",
+                    answer: "Передаёт воду под давлением из стационарного трубопровода во вращающийся вал ротора.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Определи «цикл обогащения».",
+                    answer: "Интервал между промывками, в который идёт разделение частиц в конусе.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Определи «цикл промывки».",
+                    answer: "Интервал между концентрационными циклами, когда накопленный концентрат смывается из конуса.",
+                    category: "Терминология"
+                },
+                {
+                    question: "Что такое чаша ротора?",
+                    answer: "Корпус, окружающий конус; образует с ним водяную рубашку.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Какова функция шкива в приводе концентратора?",
+                    answer: "Передаёт крутящий момент от двигателя на ротор (Vременной или зубчатый).",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Для чего служит юбка разгрузки концентрата?",
+                    answer: "Соединена с многопортовым узлом; через неё концентрат смывается в желоб в конце цикла.",
+                    category: "Компоненты"
+                },
+                {
+                    question: "Какие требования к расходу флюидизационной воды для концентратора ЦК-75 при рекомендованной силе 60 g?",
+                    answer: "G5: 17,0–23,8 м³/ч;  G6: 26,1–32,9 м³/ч;  G7: 13,6–20,4 m³/ч.",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Какие требования к расходу воды для ЦК-75 при увеличенной G*?",
+                    answer: "G6: 29,5–38,6 м³/ч;  G7: 18,2–27,3 m³/ч.",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Какие требования к расходу воды для концентратора ЦК-120 при рекомендованной силе 60 g?",
+                    answer: "G5: 41–52 m³/ч;  G6: 52–67 m³/ч;  G7: 28,4–43 m³/ч.",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Какие требования к расходу воды для ЦК-120 при увеличенной G*?",
+                    answer: "G6: 59–76 m³/ч;  G7: 38,6–58 m³/ч.",
+                    category: "Технические требования"
+                },
+                {
+                    question: "Сколько времени нужно для заполнения водяной рубашки у модели ЦК-75?",
+                    answer: "4–5 с.",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Сколько времени нужно для заполнения концентрационного конуса у модели ЦК-75?",
+                    answer: "10–12 с.",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Сколько времени нужно для заполнения водяной рубашки у модели ЦК-120?",
+                    answer: "4–5 с.",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Сколько времени нужно для заполнения концентрационного конуса у модели ЦК-120?",
+                    answer: "15–20 с.",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при низком содержании сульфида и крупном распределении GRG, какие параметры?",
+                    answer: "Конус: G5/G6; Подача: 70–100; Цикл: 20–90 мин; G: 60.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при низком содержании сульфида и среднем распределении GRG?",
+                    answer: "Конус: G5/G6; Подача: 50–80; Цикл: 20–60 мин; G: 60.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при низком содержании сульфида и тонком распределении GRG?",
+                    answer: "Конус: G6; Подача: 30–60; Цикл: 20–45 мин; G: 60–90.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при высоком содержании сульфида и крупном распределении GRG?",
+                    answer: "Конус: G5/G6; Подача: 30–60; Цикл: 10–30 мин; G: 60.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при высоком содержание сульфида и среднем распределении GRG?",
+                    answer: "Конус: G6; Подача: 20–50; Цикл: 10–20 мин; G: 60.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для первичного измельчения (закрытый цикл) при высоком содержании сульфида и тонком распределении GRG?",
+                    answer: "Конус: G6; Подача: 20–50; Цикл: 10–15 мин; G: 60.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для флотационного доизмельчения (закрытый цикл) при высоком содержании сульфида и тонком распределении GRG?",
+                    answer: "Конус: G7; Подача: 20–50; Цикл: 5–20 мин; G: 90–175.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для концентрата первичной флотации (открытый цикл) при высоком содержании сульфида и тонком распределении GRG?",
+                    answer: "Конус: G7; Подача: 5–30; Цикл: 5–20 мин; G: 90–175.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Для финальных хвостов (открытый цикл) при высоком/низком содержании сульфида и тонком распределении GRG?",
+                    answer: "Конус: G7; Подача: 5–50; Цикл: 5–30 мин; G: 60–120.",
+                    category: "Режимы работы"
+                },
+                {
+                    question: "Какова максимальная производительность по твёрдому на модели ЦК-75?",
+                    answer: "150 т/ч (165 ton пер/ч).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков максимальный общий объём пульпы на модели ЦК-75?",
+                    answer: "205 м³/ч (900 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Какова максимальная производительность по твёрдому на модели ЦК-120?",
+                    answer: "400 т/ч (440 ton пер/ч).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков максимальный общий объём пульпы на модели ЦК-120?",
+                    answer: "545 м³/ч (2400 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков минимальный (промежуточный) расход воды в начале отключения у модели ЦК-75?",
+                    answer: "11 м³/ч (50 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков конечный (низкий) расход воды перед отключением у модели ЦК-75?",
+                    answer: "4,5 м³/ч (20 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков промывочный расход воды во время отключения у модели ЦК-75?",
+                    answer: "29 м³/ч (130 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков минимальный (промежуточный) расход воды в начале отключения у модели ЦК-120?",
+                    answer: "23 м³/ч (100 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков конечный (низкий) расход воды перед отключением у модели ЦК-120?",
+                    answer: "9,1 м³/ч (40 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Каков промывочный расход воды во время отключения у модели ЦК-120?",
+                    answer: "61 м³/ч (270 US gpm).",
+                    category: "Характеристики"
+                },
+                {
+                    question: "Какой интервал и какое смазочное средство рекомендуются для подкачки смазки в ниппели концентратора?",
+                    answer: "Каждые 40 ч; Газпромнефть Grease L Moly EP 2 или эквивалент; при автоматической системе — разд. 5.1.2.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в конечные крышки корпуса подшипника модели ЦК-75?",
+                    answer: "1,5 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в верхний подшипник модели ЦК-75?",
+                    answer: "3,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в нижний подшипник модели ЦК-75?",
+                    answer: "2,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в узел вращения модели ЦК-75?",
+                    answer: "1,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в конечные крышки корпуса подшипника модели ЦК-120?",
+                    answer: "1,5 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в верхний подшипник модели ЦК-120?",
+                    answer: "5,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в нижний подшипник модели ЦК-120?",
+                    answer: "3,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Сколько смазки подкачивать в узел вращения модели ЦК-120?",
+                    answer: "3,0 г.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Труба питания»?",
+                    answer: "1000 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Верхний фланец концентрационного конуса»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Желоб хвостов – нижняя поверхность»?",
+                    answer: "2000 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Изнашиваемый конус»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Распределитель питания: внешняя кромка и опоры»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Ударная зона крышки желоба хвостов»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Нижние кольца концентрационного конуса»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Распределитель питания: центр»?",
+                    answer: "500 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какой интервал осмотра для зоны «Желоб хвостов: разгрузочный патрубок»?",
+                    answer: "2000 ч.",
+                    category: "Обслуживание"
+                },
+                {
+                    question: "Какие две основные причины появления воды в портах узла вращения?",
+                    answer: "• Механическое повреждение уплотнения\n• Неисправность подшипника узла вращения",
+                    category: "Диагностика"
+                },
+                {
+                    question: "Назови две возможные причины излишнего давления флюидизационной воды.",
+                    answer: "• Закупорка флюидизационных отверстий\n• Слишком высокий расход флюидизационной воды",
+                    category: "Диагностика"
+                },
+                {
+                    question: "Почему может быть слишком высокое дифференциальное давление на фильтре? (3 причины)",
+                    answer: "• Засорилась сетка фильтра\n• Слишком много пробок во вращающей пластине\n• Слишком крупное питание",
+                    category: "Диагностика"
+                },
+                {
+                    question: "Перечислите причины преждевременного износа футеровки.",
+                    answer: "• Попадание частиц металлического скрапа размером > 6 мм\n• Повышенная нагрузка по питанию\n• Слишком высокое содержание твёрдого в пульпе\n• Слишком крупное питание",
+                    category: "Диагностика"
+                }
+            ];
 
-    // Загрузка карточек из Markdown
-    fetch('flashcards.md')
-      .then(r=>r.text())
-      .then(text=>{
-        const lines = text.split(/\\r?\\n/);
-        let q=null,a='';
-        lines.forEach(l=>{
-          const m=l.match(/^\\d+\\.\\s\\*\\*(.+?)\\*\\*/);
-          if(m){
-            if(q) cards.push({q,a:a.trim()});
-            q=m[1]; a='';
-          } else if(q && l.trim()) {
-            a+=l.trim()+'\\n';
-          }
+            // Элементы DOM
+            const flashcard = document.getElementById('flashcard');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const addCardBtn = document.getElementById('addCardBtn');
+            const cardForm = document.getElementById('cardForm');
+            const cancelFormBtn = document.getElementById('cancelFormBtn');
+            const saveCardBtn = document.getElementById('saveCardBtn');
+            const modeBtns = document.querySelectorAll('.mode-btn');
+            const questionContent = document.getElementById('questionContent');
+            const answerContent = document.getElementById('answerContent');
+            const cardCounter = document.getElementById('cardCounter');
+            const progressBar = document.getElementById('progressBar');
+            const categoryList = document.getElementById('categoryList');
+            
+            // Состояние приложения
+            let currentCardIndex = 0;
+            let currentCategory = 'Все';
+            let studyMode = 'study'; // 'study' или 'test'
+            
+            // Инициализация категорий
+            function initCategories() {
+                const categories = ['Все', ...new Set(cards.map(card => card.category))];
+                
+                categoryList.innerHTML = '';
+                
+                categories.forEach(category => {
+                    const count = category === 'Все' 
+                        ? cards.length 
+                        : cards.filter(card => card.category === category).length;
+                    
+                    const item = document.createElement('li');
+                    item.className = 'category-item';
+                    if (category === currentCategory) item.classList.add('active');
+                    item.innerHTML = `<span>${category}</span><span>${count}</span>`;
+                    item.dataset.category = category;
+                    
+                    item.addEventListener('click', () => {
+                        document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                        currentCategory = category;
+                        currentCardIndex = 0;
+                        updateCard();
+                    });
+                    
+                    categoryList.appendChild(item);
+                });
+            }
+            
+            // Получение текущего набора карточек с учетом категории
+            function getFilteredCards() {
+                return currentCategory === 'Все' 
+                    ? cards 
+                    : cards.filter(card => card.category === currentCategory);
+            }
+            
+            // Обновление отображения карточки
+            function updateCard() {
+                const filteredCards = getFilteredCards();
+                if (filteredCards.length === 0) {
+                    questionContent.textContent = 'Нет карточек в выбранной категории';
+                    answerContent.textContent = '';
+                    cardCounter.textContent = 'Карточка 0 из 0';
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                    progressBar.style.width = '0%';
+                    return;
+                }
+                
+                const card = filteredCards[currentCardIndex];
+                questionContent.textContent = card.question;
+                answerContent.textContent = card.answer;
+                
+                // Обновление счетчика и навигации
+                cardCounter.textContent = `Карточка ${currentCardIndex + 1} из ${filteredCards.length}`;
+                prevBtn.disabled = currentCardIndex === 0;
+                nextBtn.disabled = currentCardIndex === filteredCards.length - 1;
+                
+                // Обновление прогресс-бара
+                const progress = ((currentCardIndex + 1) / filteredCards.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // Сбросить состояние переворота
+                flashcard.classList.remove('flipped');
+            }
+            
+            // Перевернуть карточку
+            flashcard.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+            });
+            
+            // Следующая карточка
+            nextBtn.addEventListener('click', function() {
+                const filteredCards = getFilteredCards();
+                if (currentCardIndex < filteredCards.length - 1) {
+                    currentCardIndex++;
+                    updateCard();
+                }
+            });
+            
+            // Предыдущая карточка
+            prevBtn.addEventListener('click', function() {
+                if (currentCardIndex > 0) {
+                    currentCardIndex--;
+                    updateCard();
+                }
+            });
+            
+            // Показать форму добавления карточки
+            addCardBtn.addEventListener('click', function() {
+                cardForm.style.display = 'block';
+            });
+            
+            // Скрыть форму добавления карточки
+            cancelFormBtn.addEventListener('click', function() {
+                cardForm.style.display = 'none';
+                // Сбросить значения формы
+                document.getElementById('cardQuestion').value = '';
+                document.getElementById('cardAnswer').value = '';
+                document.getElementById('cardCategory').value = '';
+            });
+            
+            // Сохранить новую карточку
+            saveCardBtn.addEventListener('click', function() {
+                const question = document.getElementById('cardQuestion').value.trim();
+                const answer = document.getElementById('cardAnswer').value.trim();
+                const category = document.getElementById('cardCategory').value.trim() || 'Без категории';
+                
+                if (question && answer) {
+                    cards.push({
+                        question: question,
+                        answer: answer,
+                        category: category
+                    });
+                    
+                    // Скрыть форму и сбросить значения
+                    cardForm.style.display = 'none';
+                    document.getElementById('cardQuestion').value = '';
+                    document.getElementById('cardAnswer').value = '';
+                    document.getElementById('cardCategory').value = '';
+                    
+                    // Обновить категории и показать новую карточку
+                    initCategories();
+                    currentCategory = category;
+                    currentCardIndex = getFilteredCards().length - 1;
+                    updateCard();
+                    
+                    // Показать уведомление
+                    alert('Карточка успешно добавлена!');
+                } else {
+                    alert('Пожалуйста, заполните вопрос и ответ');
+                }
+            });
+            
+            // Переключение режимов
+            modeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    modeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    studyMode = this.dataset.mode;
+                    
+                    // Здесь можно добавить логику для тестового режима
+                    if (studyMode === 'test') {
+                        alert('Тестовый режим активирован! В этом режиме вы можете проверять свои знания.');
+                    }
+                });
+            });
+            
+            // Инициализация приложения
+            initCategories();
+            updateCard();
         });
-        if(q) cards.push({q,a:a.trim()});
-        total=cards.length;
-        updateCard();
-      });
-
-    // Переключение режимов
-    modeBtns.forEach(b=>{
-      b.onclick=()=>{
-        modeBtns.forEach(x=>x.classList.remove('active'));
-        b.classList.add('active');
-        mode = b.dataset.mode;
-        reset();
-      }
-    });
-
-    // Запуск квиза
-    startQuiz.onclick = ()=>{
-      mode='quiz';
-      modeBtns.forEach(x=>{
-        if(x.dataset.mode==='quiz') x.classList.add('active');
-        else x.classList.remove('active');
-      });
-      let n = parseInt(prompt('Сколько вопросов?',10));
-      if(isNaN(n)||n<1) return;
-      total = Math.min(n,cards.length);
-      quizList = shuffle(cards).slice(0,total);
-      score=0; index=0;
-      updateCard();
-    };
-
-    // Отобразить карточку
-    function updateCard(){
-      const data = mode==='quiz'? quizList[index] : cards[index];
-      front.innerHTML=`<div class="card-title">${data.q}</div>`;
-      back.innerHTML=`<div class="card-title">${data.a.replace(/\\n/g,'<br>')}</div>`;
-      cardEl.classList.remove('flipped');
-      prevBtn.disabled = index===0;
-      nextBtn.disabled = (mode==='learn' ? index===cards.length-1 : index===total-1);
-      counter.textContent = `${index+1} / ${mode==='learn'?cards.length:total}`;
-      scoreboard.textContent = mode==='quiz'?`Правильно: ${score}/${total}`:'';
-    }
-
-    // Управление навигацией и ответами
-    cardEl.onclick = ()=> cardEl.classList.toggle('flipped');
-    prevBtn.onclick = ()=>{ if(index>0){ index--; updateCard(); } };
-    nextBtn.onclick = ()=>{
-      if(mode==='quiz' && !cardEl.classList.contains('flipped')){
-        alert('Сначала переверните карточку и нажмите ОК, чтобы засчитать ответ.');
-        cardEl.classList.add('flipped');
-      } else {
-        if(mode==='quiz'){
-          score++;
-        }
-        if(index< (mode==='learn'?cards.length-1:total-1)) index++;
-        else if(mode==='quiz'){
-          alert(`Квиз окончен. Результат: ${score}/${total}`);
-          reset();
-          return;
-        }
-        updateCard();
-      }
-    };
-
-    function reset(){
-      index=0; score=0; total=cards.length; quizList=[];
-      updateCard();
-    }
-
-    function shuffle(a){
-      for(let i=a.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [a[i],a[j]]=[a[j],a[i]];
-      }
-      return a;
-    }
-  </script>
+    </script>
 </body>
 </html>
